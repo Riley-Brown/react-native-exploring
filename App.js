@@ -1,71 +1,42 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  TextInput,
-  ListView,
-  ScrollView,
-  FlatList
-} from 'react-native';
+import { StyleSheet, View, Button } from 'react-native';
+
+import ToDos from './components/ToDos';
+import AddTodo from './components/AddTodo';
 
 export default function App() {
-  const [text, setText] = useState('ayyyy lmao');
   const [toDos, setToDos] = useState([]);
-  const [input, setInput] = useState('');
+
+  const [isShowModal, setIsShowModal] = useState(false);
 
   const addTodo = newToDo => {
     setToDos(toDos => [
       ...toDos,
       { value: newToDo, key: Math.random().toString() }
     ]);
-    setInput('');
   };
 
-  const handleChange = text => {
-    setInput(text);
-    console.log(text, toDos);
-  };
+  toggleModal = bool => setIsShowModal(bool);
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="Add Todo"
-        onChangeText={handleChange}
-        value={input}
-      />
-      <Button
-        title="Add"
-        style={styles.button}
-        onPress={() => addTodo(input)}
-      />
-      <FlatList
-        data={toDos}
-        renderItem={itemData => (
-          <View style={styles.todo}>
-            <Text>{itemData.item.value}</Text>
-          </View>
-        )}
-      />
+      <View style={styles.button}>
+        <Button title="Add new ToDo" onPress={() => setIsShowModal(true)} />
+      </View>
+      <AddTodo addTodo={addTodo} show={isShowModal} toggleModal={toggleModal} />
+
+      <ToDos toDos={toDos} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 30
-  },
-  todo: {
-    padding: 20,
-    backgroundColor: '#ccc',
-    width: 300
+    marginTop: 50
   },
   button: {
-    marginVertical: 20
+    marginStart: 20,
+    marginEnd: 20
   }
 });
