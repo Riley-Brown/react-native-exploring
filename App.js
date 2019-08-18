@@ -5,7 +5,9 @@ import {
   View,
   Button,
   TextInput,
-  ListView
+  ListView,
+  ScrollView,
+  FlatList
 } from 'react-native';
 
 export default function App() {
@@ -14,7 +16,10 @@ export default function App() {
   const [input, setInput] = useState('');
 
   const addTodo = newToDo => {
-    setToDos(toDos => [...toDos, newToDo]);
+    setToDos(toDos => [
+      ...toDos,
+      { value: newToDo, key: Math.random().toString() }
+    ]);
     setInput('');
   };
 
@@ -26,17 +31,23 @@ export default function App() {
   return (
     <View style={styles.container}>
       <TextInput
-        title="ayyy  lmao"
         placeholder="Add Todo"
         onChangeText={handleChange}
         value={input}
       />
-      <Button title="Add" onPress={() => addTodo(input)} />
-      <View>
-        {toDos.map((todo, index) => (
-          <Text key={index}>{todo}</Text>
-        ))}
-      </View>
+      <Button
+        title="Add"
+        style={styles.button}
+        onPress={() => addTodo(input)}
+      />
+      <FlatList
+        data={toDos}
+        renderItem={itemData => (
+          <View style={styles.todo}>
+            <Text>{itemData.item.value}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -48,5 +59,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 30
+  },
+  todo: {
+    padding: 20,
+    backgroundColor: '#ccc',
+    width: 300
+  },
+  button: {
+    marginVertical: 20
   }
 });
